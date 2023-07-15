@@ -1,34 +1,31 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 
 export class Modal extends Component {
-  escapeClose = e => {
-    if (e.code === 'Escape') {
-      this.props.onCloseModal();
-    }
-  };
-  overlayClose = e => {
-    if (e.target === e.currentTarget) {
-      this.props.onCloseModal();
+  onOverlayClick = event => {
+    if (event.currentTarget === event.target) {
+      this.props.onModalClose();
     }
   };
 
-  componentDidMount = () => {
-    window.addEventListener('keydown', this.escapeClose);
+  onKeyDown = event => {
+    if (event.keyCode === 27) {
+      this.props.onModalClose();
+    }
   };
 
-  componentWillUnmount = () => {
-    window.removeEventListener('keydown', this.escapeClose);
-  };
+  componentDidMount() {
+    window.addEventListener('keydown', this.onKeyDown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.onKeyDown);
+  }
 
   render() {
     return (
-      <div onClick={this.overlayClose}>
+      <div onClick={this.onOverlayClick}>
         <div>
-          <img
-            src={this.props.largeImage}
-            alt=""
-            onClick={this.props.onClick}
-          />
+          <img src={this.props.largeImageURL} alt="" />
         </div>
       </div>
     );

@@ -1,85 +1,104 @@
-import { Button } from './components/Button/Button';
-import { ImageGallery } from './components/ImageGallery/ImageGallery';
-import { Loader } from './components/Loader/Loader';
-import { Modal } from './components/Modal/Modal';
-import { Searchbar } from './components/Searchbar/Searchbar';
-import { fetchImages } from './Api';
-import { Component } from 'react';
+import React, { Component } from 'react';
+import { Searchbar } from './Searchbar/Searchbar';
+import { Button } from './Button/Button';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { fetchImages } from 'services/api';
+import { Loader } from './Loader/Loader';
+import { Modal } from './Modal/Modal';
 
 export class App extends Component {
   state = {
     images: [],
-    isLoading: false,
-    error: null,
-    query: '',
-    page: 1,
+    searchQuery: '',
+    currentPage: 1,
     totalHits: 0,
-    isModal: false,
-    selectedImage: '',
+    error: null,
+    modal: { isOpen: false, largeImageURL: '' },
+    isLoading: false,
   };
 
-  async componentDidUpdate(prevProps, prevState) {
-    const { query, page } = this.state;
-    if (prevState.query !== query || prevState.page !== page) {
-      this.setState({ isLoading: true });
-      try {
-        const images = await fetchImages(query, page);
-        if (images.hits.length === 0) {
-          alert('Nothing found!');
-        }
+  componentDidUpdate(prevProps, prevState) {
+    const { searchQuery, currentPage } = this.state;
 
-        this.setState({
-          images: [...prevState.images, ...images.hits],
-          totalHits: images.totalHits,
-        });
-      } catch (error) {
-        this.setState({ error });
-        alert('error: ' + this.state.error);
-      } finally {
-        this.setState({ isLoading: false });
-      }
+    if (
+      searchQuery !== prevState.searchQuery ||
+      currentPage !== prevState.currentPage
+    ) {
+      this.setState({ isLoading: true });
+      this.fetchImagesData(searchQuery, currentPage);
     }
   }
 
-  formSubmit = searchQuery => {
-    this.setState({ query: searchQuery, page: 1, images: [] });
+  fetchImagesData = async (searchQuery, currentPage) => {
+    try {
+      const response = await fetchImages(searchQuery, currentPage);
+      if (response.hits.length === 0) {
+        alert('Nothing found!');
+      }
+
+      this.setState(prevState => ({
+        images: [...prevState.images, ...response.hits],
+        totalHits: response.totalHits,
+      }));
+    } catch (error) {
+      this.setState({
+        error: 'No images are showing',
+      });
+    } finally {
+      this.setState({ isLoading: false });
+    }
   };
-  loadMore = e => {
-    e.preventDefault();
+
+  handleSubmit = searchQuery => {
+    this.setState({
+      searchQuery,
+    });
+  };
+
+  loadMore = event => {
+    event.preventDefault();
 
     this.setState(prevState => ({
-      page: prevState.page + 1,
+      currentPage: prevState.currentPage + 1,
     }));
   };
 
-  onOpenModal = imageURL => {
-    this.setState({ isModal: true, selectedImage: imageURL });
+  onModalOpen = response => {
+    this.setState({
+      modal: {
+        isOpen: true,
+        largeImageURL: response.largeImageURL,
+      },
+    });
   };
 
-  onCloseModal = () => {
-    this.setState({ isModal: false, selectedImage: '' });
+  onModalClose = () => {
+    this.setState({
+      modal: {
+        isOpen: false,
+        largeImageURL: '',
+      },
+    });
   };
 
   render() {
     return (
-      <div className={styles.app}>
-        <Searchbar onSubmit={this.formSubmit} />
+      <div>
+        <Searchbar onSubmit={this.handleSubmit} />
         {this.state.isLoading && <Loader />}
-        <ImageGallery
-          images={this.state.images}
-          onOpenModal={this.onOpenModal}
-        />
+        <Button onClick={this.loadMore} />
 
-        {this.state.page < Math.ceil(this.state.totalHits / 12) ? (
-          <Button onClick={this.loadMore} />
-        ) : null}
-        {this.state.isModal && (
+        {this.state.modal.isOpen && (
           <Modal
-            largeImage={this.state.selectedImage}
-            onClick={this.onCloseModal}
-            onCloseModal={this.onCloseModal}
+            largeImageURL={this.state.modal.largeImageURL}
+            onModalClose={this.onModalClose}
           />
         )}
+
+        <ImageGallery
+          images={this.state.images}
+          onOpenModal={this.onModalOpen}
+        />
       </div>
     );
   }

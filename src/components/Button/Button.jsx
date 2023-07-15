@@ -1,8 +1,8 @@
 export const Button = ({ onClick }) => {
   return (
     <div>
-      <button type="submit" onClick={onClick}>
-        Load More
+      <button type="button" onClick={onClick}>
+        Load more
       </button>
     </div>
   );
