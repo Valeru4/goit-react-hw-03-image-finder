@@ -63,11 +63,11 @@ export class App extends Component {
     }));
   };
 
-  onOpenModal = response => {
+  onOpenModal = item => {
     this.setState({
       modal: {
         isOpen: true,
-        largeImageURL: response.largeImageURL,
+        largeImageURL: item.largeImageURL,
       },
     });
   };
