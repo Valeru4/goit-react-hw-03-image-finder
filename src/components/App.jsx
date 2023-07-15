@@ -63,7 +63,7 @@ export class App extends Component {
     }));
   };
 
-  onModalOpen = response => {
+  onOpenModal = response => {
     this.setState({
       modal: {
         isOpen: true,
@@ -97,7 +97,7 @@ export class App extends Component {
 
         <ImageGallery
           images={this.state.images}
-          onOpenModal={this.onModalOpen}
+          onOpenModal={this.onOpenModal}
         />
       </div>
     );
