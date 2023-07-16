@@ -51,7 +51,9 @@ export class App extends Component {
 
   handleSubmit = searchQuery => {
     this.setState({
-      searchQuery,
+      searchQuery: searchQuery,
+      images: [],
+      currentPage: 1,
     });
   };
 
@@ -86,7 +88,6 @@ export class App extends Component {
       <div>
         <Searchbar onSubmit={this.handleSubmit} />
         {this.state.isLoading && <Loader />}
-        <Button onClick={this.loadMore} />
 
         {this.state.modal.isOpen && (
           <Modal
@@ -99,6 +100,8 @@ export class App extends Component {
           images={this.state.images}
           onOpenModal={this.onOpenModal}
         />
+
+        <Button onClick={this.loadMore} />
       </div>
     );
   }

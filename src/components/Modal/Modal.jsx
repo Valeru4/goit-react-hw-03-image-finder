@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Overlay, ModalWindow } from './Modal.styled';
+import PropTypes from 'prop-types';
 
 export class Modal extends Component {
   onOverlayClick = event => {
@@ -23,11 +25,16 @@ export class Modal extends Component {
 
   render() {
     return (
-      <div onClick={this.onOverlayClick}>
-        <div>
+      <Overlay onClick={this.onOverlayClick}>
+        <ModalWindow>
           <img src={this.props.largeImageURL} alt="" />
-        </div>
-      </div>
+        </ModalWindow>
+      </Overlay>
     );
   }
 }
+
+Modal.propTypes = {
+  largeImageURL: PropTypes.any.isRequired,
+  onModalClose: PropTypes.func.isRequired,
+};

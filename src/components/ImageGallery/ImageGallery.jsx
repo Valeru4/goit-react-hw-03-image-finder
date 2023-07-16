@@ -1,10 +1,12 @@
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import React from 'react';
+import { List } from './ImageGallery.styled';
+import PropTypes from 'prop-types';
 
 export const ImageGallery = ({ images, onOpenModal }) => {
   return (
     <div>
-      <ul>
+      <List>
         {images.length > 0 &&
           images.map(image => (
             <ImageGalleryItem
@@ -13,7 +15,19 @@ export const ImageGallery = ({ images, onOpenModal }) => {
               onOpenModal={onOpenModal}
             />
           ))}
-      </ul>
+      </List>
     </div>
   );
+};
+
+ImageGallery.propTypes = {
+  onOpenModal: PropTypes.func.isRequired,
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      webformatURL: PropTypes.string.isRequired,
+      largeImageURL: PropTypes.string.isRequired,
+      tags: PropTypes.string.isRequired,
+    })
+  ),
 };
