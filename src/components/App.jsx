@@ -36,8 +36,17 @@ export class App extends Component {
         alert('Nothing found!');
       }
 
+      const images = response.hits.map(
+        ({ id, tags, webformatURL, largeImageURL }) => ({
+          id,
+          tags,
+          webformatURL,
+          largeImageURL,
+        })
+      );
+
       this.setState(prevState => ({
-        images: [...prevState.images, ...response.hits],
+        images: [...prevState.images, images],
         totalHits: response.totalHits,
       }));
     } catch (error) {
@@ -65,11 +74,11 @@ export class App extends Component {
     }));
   };
 
-  onOpenModal = item => {
+  onOpenModal = largeImageURL => {
     this.setState({
       modal: {
         isOpen: true,
-        largeImageURL: item.largeImageURL,
+        largeImageURL: largeImageURL,
       },
     });
   };
@@ -84,6 +93,9 @@ export class App extends Component {
   };
 
   render() {
+    const showBtn =
+      !this.state.isLoading &&
+      this.state.images.length !== this.state.totalHits;
     return (
       <div>
         <Searchbar onSubmit={this.handleSubmit} />
@@ -101,7 +113,7 @@ export class App extends Component {
           onOpenModal={this.onOpenModal}
         />
 
-        <Button onClick={this.loadMore} />
+        {showBtn && <Button onClick={this.loadMore} />}
       </div>
     );
   }

@@ -8,8 +8,8 @@ export const ImageGalleryItem = ({ item, onOpenModal }) => {
     <Item key={item.id}>
       <Image
         src={item.webformatURL}
-        alt={item.tag}
-        onClick={() => onOpenModal(item)}
+        alt={item.tags}
+        onClick={() => onOpenModal(item.largeImageURL)}
       />
     </Item>
   );
@@ -17,11 +17,9 @@ export const ImageGalleryItem = ({ item, onOpenModal }) => {
 
 ImageGalleryItem.propTypes = {
   onOpenModal: PropTypes.func.isRequired,
-  item: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      webformatURL: PropTypes.string.isRequired,
-      tag: PropTypes.string.isRequired,
-    })
-  ),
+  item: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    webformatURL: PropTypes.string.isRequired,
+    tag: PropTypes.string.isRequired,
+  }),
 };
