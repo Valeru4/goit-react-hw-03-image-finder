@@ -21,5 +21,5 @@ ImageGalleryItem.propTypes = {
     id: PropTypes.number.isRequired,
     webformatURL: PropTypes.string.isRequired,
     tag: PropTypes.string.isRequired,
-  }),
+  }).isRequired,
 };

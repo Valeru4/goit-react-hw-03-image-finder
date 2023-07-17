@@ -46,7 +46,7 @@ export class App extends Component {
       );
 
       this.setState(prevState => ({
-        images: [...prevState.images, images],
+        images: [...prevState.images, ...images],
         totalHits: response.totalHits,
       }));
     } catch (error) {
